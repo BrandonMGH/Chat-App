@@ -1,11 +1,17 @@
 const express = require("express")
 const app = express()
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
 const port = 3000
 
-app.get("/", (req, res) => {
-    res.send("test")
-})
+app.use(express.static('public'))
 
-app.listen(port, ()=> {
-    console.log("You are not connected to Port " + port)
+io.on('connection', function(socket){
+    socket.on('chat message', function(msg){
+      io.emit('chat message', msg);
+    });
+  });
+
+http.listen(port, ()=> {
+    console.log("You are now connected to Port " + port)
 })
